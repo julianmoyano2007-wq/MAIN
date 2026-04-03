@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAIN | Web, automatización y sistemas de atención</title>
+  <style>
+    :root {
+      --bg: #050913;
+      --bg-soft: rgba(12, 19, 34, 0.72);
+      --surface: rgba(255,255,255,0.06);
+      --surface-2: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.1);
+      --text: #f8fafc;
+      --muted: #b9c7db;
+      --muted-2: #8fa1ba;
+      --primary: #7dd3fc;
+      --primary-2: #8b5cf6;
+      --accent: #7ee7c9;
+      --shadow: 0 24px 70px rgba(0,0,0,0.35);
+      --radius: 28px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: radial-gradient(circle at top, rgba(125,211,252,0.08), transparent 24%),
+                  radial-gradient(circle at bottom right, rgba(139,92,246,0.08), transparent 28%),
+                  linear-gradient(180deg, #04070f 0%, #07111f 42%, #08111d 100%);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    #galaxy-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.95;
+    }
+
+    .galaxy-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(125,211,252,0.12), transparent 25%),
+        radial-gradient(circle at 80% 20%, rgba(139,92,246,0.12), transparent 24%),
+        radial-gradient(circle at 50% 75%, rgba(126,231,201,0.06), transparent 26%);
+      filter: blur(12px);
+    }
+
+    .container {
+      width: min(92%, 1180px);
+      margin: 0 auto;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 9, 19, 0.68);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #07111f;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(125,211,252,0.28);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #c4b5fd);
+      color: #07111f;
+      box-shadow: 0 18px 42px rgba(125,211,252,0.24);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 50px rgba(125,211,252,0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.10);
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      border-color: rgba(125,211,252,0.35);
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 60px 0 50px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 34px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: var(--accent);
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.02;
+      letter-spacing: -2px;
+      margin-bottom: 18px;
+      max-width: 760px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 0%, #8fdbff 42%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.06rem;
+      max-width: 680px;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .hero-quote {
+      max-width: 640px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d6e3f5;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-quote strong {
+      display: block;
+      color: var(--primary);
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-support {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .visual-panel {
+      position: relative;
+      min-height: 560px;
+      border-radius: 34px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(125,211,252,0.12), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: var(--shadow);
+      perspective: 1400px;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 0.18s ease-out;
+    }
+
+    .orb-core {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 180px;
+      height: 180px;
+      margin: -90px 0 0 -90px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.85), rgba(125,211,252,0.45) 25%, rgba(139,92,246,0.36) 56%, rgba(5,9,19,0.12) 76%);
+      box-shadow:
+        0 0 45px rgba(125,211,252,0.34),
+        0 0 120px rgba(139,92,246,0.18);
+      transform: translateZ(80px);
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .orb-core::after {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.22);
+      filter: blur(0.3px);
+    }
+
+    .ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      border: 1px solid rgba(125,211,252,0.3);
+      box-shadow: 0 0 40px rgba(125,211,252,0.08);
+      transform-style: preserve-3d;
+    }
+
+    .ring-1 {
+      width: 320px;
+      height: 120px;
+      margin: -60px 0 0 -160px;
+      transform: rotateX(72deg) rotateZ(8deg) translateZ(10px);
+      animation: spin-a 10s linear infinite;
+    }
+
+    .ring-2 {
+      width: 250px;
+      height: 250px;
+      margin: -125px 0 0 -125px;
+      transform: rotateY(74deg) rotateZ(20deg);
+      border-color: rgba(196,181,253,0.25);
+      animation: spin-b 16s linear infinite;
+    }
+
+    .ring-3 {
+      width: 360px;
+      height: 360px;
+      margin: -180px 0 0 -180px;
+      transform: rotateX(82deg) rotateY(16deg);
+      border-color: rgba(126,231,201,0.18);
+      animation: spin-c 22s linear infinite;
+    }
+
+    .orbit-particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.96), rgba(125,211,252,0.5));
+      box-shadow: 0 0 22px rgba(125,211,252,0.35);
+    }
+
+    .p1 { top: 18%; left: 64%; animation: drift 5s ease-in-out infinite; }
+    .p2 { top: 72%; left: 26%; animation: drift 7s ease-in-out infinite reverse; }
+    .p3 { top: 32%; left: 20%; animation: drift 6.5s ease-in-out infinite; }
+    .p4 { top: 78%; left: 70%; animation: drift 8s ease-in-out infinite reverse; }
+
+    .panel-copy {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 26px;
+      padding: 18px 18px 16px;
+      border-radius: 22px;
+      background: rgba(5,9,19,0.56);
+      border: 1px solid rgba(255,255,255,0.09);
+      backdrop-filter: blur(14px);
+    }
+
+    .panel-copy strong {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .panel-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+    }
+
+    section { padding: 82px 0; }
+
+    .section-head {
+      text-align: center;
+      max-width: 780px;
+      margin: 0 auto 42px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: -1px;
+      margin-bottom: 14px;
+    }
+
+    .section-head p { color: var(--muted); }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      padding: 28px;
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.035));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(125,211,252,0.28);
+    }
+
+    .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+      font-size: 1.2rem;
+      background: linear-gradient(135deg, rgba(125,211,252,0.18), rgba(139,92,246,0.18));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .card h3 { margin-bottom: 12px; font-size: 1.15rem; }
+    .card p { color: var(--muted); font-size: 0.97rem; }
+
+    .features {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .feature-box, .mini-panel, .flow-card, .step, .plan, .agency-box, .cta {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.035));
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .feature-box { padding: 34px; border-radius: 30px; }
+    .feature-box h2 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 1.08;
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+    .feature-box p { color: var(--muted); margin-bottom: 24px; }
+
+    .check-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .check-item {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .stack { display: grid; gap: 18px; }
+    .mini-panel { padding: 24px; border-radius: 24px; }
+    .mini-panel h3 { margin-bottom: 10px; }
+    .mini-panel p { color: var(--muted); font-size: 0.95rem; }
+
+    .automation-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .flow-card { padding: 24px 20px; border-radius: 24px; text-align: left; }
+    .flow-card strong {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .flow-card h3 { margin-bottom: 10px; font-size: 1.08rem; }
+    .flow-card p { color: var(--muted); font-size: 0.95rem; }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .step { padding: 26px 22px; border-radius: 24px; }
+    .step-number {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #07111f;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+    .step h3 { margin-bottom: 10px; }
+    .step p { color: var(--muted); font-size: 0.95rem; }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .plan { padding: 30px 28px; border-radius: 28px; position: relative; overflow: hidden; }
+    .plan.featured {
+      border-color: rgba(125,211,252,0.34);
+      transform: translateY(-4px);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      border-radius: 999px;
+      background: rgba(125,211,252,0.14);
+      color: #bde8ff;
+      border: 1px solid rgba(125,211,252,0.2);
+      margin-bottom: 14px;
+    }
+
+    .plan h3 { font-size: 1.25rem; margin-bottom: 8px; }
+    .plan .subtitle { color: var(--muted); margin-bottom: 14px; font-size: 0.95rem; }
+
+    .price {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+      letter-spacing: -1px;
+    }
+
+    .price span {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--muted-2);
+    }
+
+    .plan ul {
+      list-style: none;
+      margin-bottom: 24px;
+    }
+
+    .plan ul li {
+      color: var(--muted);
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.95rem;
+    }
+
+    .agency {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .agency-box { padding: 30px; border-radius: 28px; }
+    .agency-box h3 { margin-bottom: 14px; font-size: 1.18rem; }
+    .agency-box p { color: var(--muted); }
+
+    .agency-points {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .agency-points div {
+      padding: 13px 15px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .cta {
+      padding: 44px;
+      border-radius: 34px;
+      text-align: center;
+      background:
+        radial-gradient(circle at top right, rgba(125,211,252,0.16), transparent 26%),
+        linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    }
+
+    .cta h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.08;
+      margin-bottom: 14px;
+      letter-spacing: -1px;
+    }
+
+    .cta p {
+      color: var(--muted);
+      max-width: 760px;
+      margin: 0 auto 24px;
+    }
+
+    .contact-info {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .contact-chip {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    footer {
+      padding: 28px 0 42px;
+      text-align: center;
+      color: var(--muted-2);
+      font-size: 0.92rem;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateZ(80px) translateY(0); }
+      50% { transform: translateZ(80px) translateY(-14px); }
+    }
+
+    @keyframes spin-a {
+      from { transform: rotateX(72deg) rotateZ(0deg) translateZ(10px); }
+      to { transform: rotateX(72deg) rotateZ(360deg) translateZ(10px); }
+    }
+
+    @keyframes spin-b {
+      from { transform: rotateY(74deg) rotateZ(0deg); }
+      to { transform: rotateY(74deg) rotateZ(-360deg); }
+    }
+
+    @keyframes spin-c {
+      from { transform: rotateX(82deg) rotateY(16deg) rotateZ(0deg); }
+      to { transform: rotateX(82deg) rotateY(16deg) rotateZ(360deg); }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(12px,-10px,20px) scale(1.15); }
+    }
+
+    @media (max-width: 1024px) {
+      .hero-grid, .features, .agency, .grid-3, .plans, .process, .automation-grid {
+        grid-template-columns: 1fr;
+      }
+      .metric-grid, .check-list { grid-template-columns: 1fr; }
+      .visual-panel { min-height: 500px; }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .hero {
+        min-height: auto;
+        padding-top: 40px;
+      }
+      .hero h1 { font-size: clamp(2.2rem, 10vw, 3.3rem); }
+      .hero-panel, .card, .feature-box, .mini-panel, .flow-card, .step, .plan, .agency-box, .cta {
+        padding: 22px;
+      }
+      .contact-info, .hero-actions, .hero-support, .trust-row {
+        justify-content: flex-start;
+      }
+      .visual-panel { min-height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="galaxy-canvas"></canvas>
+  <div class="galaxy-glow"></div>
+
+  <header>
+    <div class="container nav">
+      <a href="#inicio" class="logo">
+        <span class="logo-mark">M</span>
+        <span>MAIN</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#automatizacion">Automatización</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#planes">Planes</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="inicio">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">● Tecnología, futuro y sistemas para negocios que quieren avanzar</span>
+        <div style="margin-bottom:14px;">
+          <span style="display:inline-block; padding:6px 12px; font-size:0.75rem; color:#9fb0c7; border:1px solid rgba(255,255,255,0.08); border-radius:999px; background:rgba(255,255,255,0.03); letter-spacing:0.4px;">
+            By Julián Moyano
+          </span>
+        </div>
+        <h1>
+          El futuro pertenece a quienes <span class="gradient-text">se atreven a construir antes que los demás</span>
+        </h1>
+        <p>
+          MAIN diseña páginas web y sistemas de atención para negocios que quieren verse más profesionales, responder con más claridad y organizar mejor sus oportunidades. Creamos estructuras digitales pensadas para captar, responder y agendar mejor.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20los%20servicios%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20producto%2Fservicio%20y%20quiero%20recibir%20m%C3%A1s%20informaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AServicio%20de%20inter%C3%A9s%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Contactar por Gmail</a>
+          <a class="btn btn-secondary" href="#planes">Ver planes</a>
+        </div>
+
+        <div class="hero-quote">
+          <strong>Visión MAIN</strong>
+          El progreso no espera. Las marcas que crecen son las que entienden que una mejor presencia, una mejor atención y una mejor estructura digital también construyen futuro.
+        </div>
+
+        <div class="hero-support">
+          <span class="chip">Canal principal: mainagencycol@gmail.com</span>
+          <span class="chip">Apoyo alternativo: +57 316 8181056</span>
+          <span class="chip">Web · sistemas · automatización</span>
+        </div>
+      </div>
+
+      <div class="visual-panel" id="visual-panel">
+        <div class="scene" id="scene">
+          <div class="orb-core"></div>
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+          <span class="orbit-particle p1"></span>
+          <span class="orbit-particle p2"></span>
+          <span class="orbit-particle p3"></span>
+          <span class="orbit-particle p4"></span>
+        </div>
+
+        <div class="panel-copy">
+          <strong>Experiencia interactiva</strong>
+          <p>Mueve el cursor y verás una visual inspirada en expansión, progreso y tecnología: la forma en que MAIN quiere que se sienta una marca que mira hacia adelante.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="servicios">
+    <div class="container">
+      <div class="section-head">
+        <h2>Servicios pensados para captar clientes y atender mejor</h2>
+        <p>
+          En MAIN unimos diseño, estructura y automatización para que un negocio no solo se vea bien, sino que también responda mejor, organice contactos y aproveche más oportunidades.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="icon">✦</div>
+          <h3>Páginas web profesionales</h3>
+          <p>
+            Sitios modernos y adaptados a celular para mostrar servicios, productos, redes, ubicación y medios de contacto con una imagen clara y confiable.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">⚡</div>
+          <h3>Bots y atención automática</h3>
+          <p>
+            Sistemas para responder preguntas frecuentes, tomar nombre y datos del cliente, clasificar solicitudes y dejar el contacto más organizado.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">◎</div>
+          <h3>Agenda y automatización digital</h3>
+          <p>
+            Flujos que pueden apoyar el agendamiento de citas, enviar confirmaciones por correo y conectar procesos básicos con herramientas como WhatsApp, Gmail y Calendar.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="ventajas">
+    <div class="container features">
+      <div class="feature-box">
+        <h2>Una agencia para negocios que quieren verse profesionales y trabajar con más orden</h2>
+        <p>
+          MAIN nace para ayudar a empresas pequeñas y locales a dar un salto de imagen, pero también a mejorar la forma en que atienden clientes. Diseñamos páginas, flujos y automatizaciones simples que transmiten innovación, confianza y estructura.
+        </p>
+
+        <div class="check-list">
+          <div class="check-item">✓ Diseño limpio, actual y premium</div>
+          <div class="check-item">✓ Estructura enfocada en contacto</div>
+          <div class="check-item">✓ Bots para atención inicial</div>
+          <div class="check-item">✓ Integración con Gmail</div>
+          <div class="check-item">✓ Agenda y confirmaciones</div>
+          <div class="check-item">✓ Imagen digital que inspira confianza</div>
+        </div>
+      </div>
+
+      <div class="stack">
+        <div class="mini-panel">
+          <h3>Más rápido</h3>
+          <p>
+            Un visitante puede escribir, recibir orientación inicial y dejar sus datos sin depender de que el negocio responda al instante.
+          </p>
+        </div>
+        <div class="mini-panel">
+          <h3>Más orden</h3>
+          <p>
+            Los contactos, solicitudes y citas pueden quedar mejor organizados para evitar pérdidas de tiempo y oportunidades.
+          </p>
+        </div>
+        <div class="mini-panel">
+          <h3>Más proyección</h3>
+          <p>
+            Tu marca puede verse moderna, actual y más preparada para competir en un entorno digital cada vez más exigente.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="prueba-confianza">
+    <div class="container">
+      <div class="section-head">
+        <h2>Qué problema resolvemos</h2>
+        <p>
+          MAIN está pensada para negocios que sí reciben interés de clientes, pero todavía manejan todo de forma manual y desordenada.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="icon">✓</div>
+          <h3>Te escriben y respondes tarde</h3>
+          <p>
+            Organizamos mejor el canal de entrada para que el cliente tenga una ruta clara de contacto y tú no pierdas tantas oportunidades.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">✓</div>
+          <h3>Las citas y datos quedan regados</h3>
+          <p>
+            Creamos flujos simples para captar información útil, dejar solicitudes más ordenadas y facilitar seguimientos o agendamientos.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">✓</div>
+          <h3>Tu negocio aún no se ve tan profesional</h3>
+          <p>
+            Diseñamos una presencia digital que inspire más confianza y ayude a que el cliente te perciba como un negocio serio.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="automatizacion">
+    <div class="container">
+      <div class="section-head">
+        <h2>Así puede funcionar una automatización de MAIN</h2>
+        <p>
+          Diseñamos flujos simples y útiles para que un negocio pueda captar contactos, responder mejor y organizar su agenda con menos fricción.
+        </p>
+      </div>
+
+      <div class="automation-grid">
+        <article class="flow-card">
+          <strong>Paso 1</strong>
+          <h3>El cliente escribe</h3>
+          <p>Puede llegar desde la página, correo, WhatsApp o un formulario y dejar sus datos e interés principal.</p>
+        </article>
+
+        <article class="flow-card">
+          <strong>Paso 2</strong>
+          <h3>El sistema orienta</h3>
+          <p>La automatización responde lo básico, clasifica la necesidad y recoge información útil para el negocio.</p>
+        </article>
+
+        <article class="flow-card">
+          <strong>Paso 3</strong>
+          <h3>Se agenda o confirma</h3>
+          <p>Según el flujo, se puede proponer una cita, enviar confirmación o dejar el contacto listo para seguimiento.</p>
+        </article>
+
+        <article class="flow-card">
+          <strong>Paso 4</strong>
+          <h3>Todo queda más organizado</h3>
+          <p>Con integraciones adecuadas, la información puede pasar a Gmail, Calendar u otras herramientas del negocio.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="proceso">
+    <div class="container">
+      <div class="section-head">
+        <h2>Así trabajamos en MAIN</h2>
+        <p>
+          Un proceso claro para construir una solución que no solo se vea bien, sino que también funcione de manera útil para el negocio.
+        </p>
+      </div>
+
+      <div class="process">
+        <article class="step">
+          <div class="step-number">1</div>
+          <h3>Diagnóstico</h3>
+          <p>Entendemos el negocio, el tipo de cliente, las necesidades de atención y los objetivos comerciales.</p>
+        </article>
+
+        <article class="step">
+          <div class="step-number">2</div>
+          <h3>Estructura del flujo</h3>
+          <p>Definimos la página, el recorrido del usuario y las automatizaciones o integraciones que necesita.</p>
+        </article>
+
+        <article class="step">
+          <div class="step-number">3</div>
+          <h3>Desarrollo</h3>
+          <p>Construimos la web, conectamos canales de contacto y dejamos listo el sistema base de atención o agenda.</p>
+        </article>
+
+        <article class="step">
+          <div class="step-number">4</div>
+          <h3>Lanzamiento</h3>
+          <p>Entregamos una solución lista para mejorar la imagen del negocio y facilitar su operación digital.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="planes">
+    <div class="container">
+      <div class="section-head">
+        <h2>Planes claros para empezar y crecer</h2>
+        <p>
+          Cada negocio necesita una solución distinta. Por eso en MAIN trabajamos con propuestas personalizadas según la etapa, necesidad y nivel de automatización que requiera cada proyecto.
+        </p>
+      </div>
+
+      <div class="plans">
+        <article class="plan">
+          <span class="badge">Ideal para empezar</span>
+          <h3>Plan Web Inicial</h3>
+          <p class="subtitle">Para negocios nuevos que necesitan una presencia digital clara, profesional y bien presentada</p>
+          <ul>
+            <li>Landing page profesional</li>
+            <li>Diseño adaptable a celular</li>
+            <li>Canal principal por Gmail</li>
+            <li>Sección de servicios, contacto y redes</li>
+            <li>1 ronda de ajustes</li>
+          </ul>
+          <a class="btn btn-secondary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20el%20Plan%20Web%20Inicial%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20Plan%20Web%20Inicial.%0A%0ANombre%3A%0ANegocio%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Cotizar por Gmail</a>
+        </article>
+
+        <article class="plan featured">
+          <span class="badge">Más recomendado</span>
+          <h3>Plan Atención Inteligente</h3>
+          <p class="subtitle">Para negocios que quieren una solución inicial más estratégica para captar y responder mejor</p>
+          <ul>
+            <li>Página más completa de hasta 5 secciones</li>
+            <li>Canal principal por Gmail</li>
+            <li>Flujo básico para preguntas frecuentes</li>
+            <li>Captación inicial de nombre, servicio e interés</li>
+            <li>2 rondas de ajustes</li>
+          </ul>
+          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20el%20Plan%20Atenci%C3%B3n%20Inteligente%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20Plan%20Atenci%C3%B3n%20Inteligente.%0A%0ANombre%3A%0ANegocio%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Cotizar por Gmail</a>
+        </article>
+
+        <article class="plan">
+          <span class="badge">Para crecer</span>
+          <h3>Plan Agenda & Automatización</h3>
+          <p class="subtitle">Para negocios que buscan una solución más completa, estructurada y personalizada</p>
+          <ul>
+            <li>Web más robusta y personalizada</li>
+            <li>Flujo de atención más completo</li>
+            <li>Agenda básica conectada a Calendar</li>
+            <li>Confirmaciones o seguimiento por correo</li>
+            <li>3 rondas de ajustes</li>
+          </ul>
+          <a class="btn btn-secondary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20el%20Plan%20Agenda%20y%20Automatizaci%C3%B3n%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20Plan%20Agenda%20y%20Automatizaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Cotizar por Gmail</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container agency">
+      <div class="agency-box">
+        <h3>Sobre la agencia</h3>
+        <p>
+          MAIN es una agencia digital creada para ayudar a pequeños negocios a construir una presencia online moderna, innovadora y funcional. Nuestra visión es que una empresa que apenas empieza también puede tener una página seria, una atención más ordenada y procesos digitales mejor estructurados.
+        </p>
+      </div>
+
+      <div class="agency-box">
+        <h3>Lo que queremos que el cliente sienta al entrar</h3>
+        <div class="agency-points">
+          <div>Que está viendo una agencia actual y confiable</div>
+          <div>Que el servicio se ve ordenado y profesional</div>
+          <div>Que MAIN puede ayudarle a responder mejor</div>
+          <div>Que su negocio puede crecer con más sistema</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="container">
+      <div class="cta">
+        <h2>Haz que tu negocio se vea profesional y avance con más claridad</h2>
+        <p>
+          En MAIN te ayudamos a tener una presencia digital sólida y un sistema más ordenado para captar, responder y agendar clientes con más estructura.
+        </p>
+        <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20los%20servicios%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20producto%2Fservicio%20y%20quiero%20recibir%20m%C3%A1s%20informaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AServicio%20de%20inter%C3%A9s%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Escríbenos por Gmail</a>
+          <a class="btn btn-secondary" href="https://wa.me/573168181056?text=Hola%20MAIN%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20p%C3%A1gina%20web%20o%20automatizaci%C3%B3n%20para%20mi%20negocio." target="_blank">WhatsApp alternativo</a>
+        </div>
+        <div class="contact-info">
+          <span class="contact-chip">Correo principal: mainagencycol@gmail.com</span>
+          <span class="contact-chip">WhatsApp alternativo: +57 316 8181056</span>
+          <span class="contact-chip">MAIN · Web, bots y automatización</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 MAIN. Agencia de páginas web, automatización y sistemas de atención para negocios en crecimiento.</p>
+
+      <p style="margin-top:14px; font-size:0.78rem; color:#8fa1ba; letter-spacing:0.4px;">
+        By Julián Moyano
+      </p>
+
+    </div>
+  </footer>
+
+  <script>
+    const scene = document.getElementById('scene');
+    const panel = document.getElementById('visual-panel');
+
+    panel.addEventListener('mousemove', (e) => {
+      const rect = panel.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+      const rotateY = x * 22;
+      const rotateX = -y * 18;
+      scene.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    panel.addEventListener('mouseleave', () => {
+      scene.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+
+    const canvas = document.getElementById('galaxy-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = 0;
+    let height = 0;
+    let stars = [];
+    let mouseX = 0;
+    let mouseY = 0;
+
+    function resize() {
+      width = canvas.width = window.innerWidth * devicePixelRatio;
+      height = canvas.height = window.innerHeight * devicePixelRatio;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+      createStars();
+    }
+
+    function createStars() {
+      stars = [];
+      const count = Math.min(220, Math.floor((window.innerWidth * window.innerHeight) / 9000));
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          r: Math.random() * 1.8 + 0.2,
+          z: Math.random() * 0.9 + 0.2,
+          speed: Math.random() * 0.08 + 0.01,
+          alpha: Math.random() * 0.6 + 0.2
+        });
+      }
+    }
+
+    function drawNebula() {
+      const grad1 = ctx.createRadialGradient(
+        window.innerWidth * 0.18 + mouseX * 20,
+        window.innerHeight * 0.18 + mouseY * 10,
+        0,
+        window.innerWidth * 0.18 + mouseX * 20,
+        window.innerHeight * 0.18 + mouseY * 10,
+        240
+      );
+      grad1.addColorStop(0, 'rgba(125,211,252,0.14)');
+      grad1.addColorStop(1, 'rgba(125,211,252,0)');
+
+      const grad2 = ctx.createRadialGradient(
+        window.innerWidth * 0.82 - mouseX * 18,
+        window.innerHeight * 0.22 - mouseY * 12,
+        0,
+        window.innerWidth * 0.82 - mouseX * 18,
+        window.innerHeight * 0.22 - mouseY * 12,
+        220
+      );
+      grad2.addColorStop(0, 'rgba(139,92,246,0.14)');
+      grad2.addColorStop(1, 'rgba(139,92,246,0)');
+
+      ctx.fillStyle = grad1;
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.fillStyle = grad2;
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      drawNebula();
+
+      for (const star of stars) {
+        star.y += star.speed;
+        if (star.y > window.innerHeight + 4) {
+          star.y = -4;
+          star.x = Math.random() * window.innerWidth;
+        }
+
+        const px = star.x + mouseX * star.z * 8;
+        const py = star.y + mouseY * star.z * 8;
+
+        ctx.beginPath();
+        ctx.arc(px, py, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${star.alpha})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5);
+      mouseY = (e.clientY / window.innerHeight - 0.5);
+    });
+
+    window.addEventListener('resize', resize);
+
+    resize();
+    animate();
+  </script>
+</body>
+</html>
