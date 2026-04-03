@@ -1013,7 +1013,7 @@
         </p>
         <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
           <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20los%20servicios%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20producto%2Fservicio%20y%20quiero%20recibir%20m%C3%A1s%20informaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AServicio%20de%20inter%C3%A9s%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Escríbenos por Gmail</a>
-          <a class="btn btn-secondary" href="https://wa.me/573168181056?text=Hola%20MAIN%2C%20quiero%20informaci%C3%B3n%20sobre%20una%20p%C3%A1gina%20web%20o%20automatizaci%C3%B3n%20para%20mi%20negocio." target="_blank">WhatsApp alternativo</a>
+          <a class="btn btn-secondary" href="#" onclick="openWhatsApp(); return false;">WhatsApp alternativo</a>
         </div>
         <div class="contact-info">
           <span class="contact-chip">Correo principal: mainagencycol@gmail.com</span>
@@ -1036,6 +1036,29 @@
   </footer>
 
   <script>
+
+    function openWhatsApp() {
+      const phone = "573168181056";
+      const text = encodeURIComponent("Hola MAIN, quiero información sobre una página web o automatización para mi negocio.");
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        const appUrl = `whatsapp://send?phone=${phone}&text=${text}`;
+        const fallbackUrl = `https://wa.me/${phone}?text=${text}`;
+        window.location.href = appUrl;
+        setTimeout(() => {
+          window.location.href = fallbackUrl;
+        }, 900);
+      } else {
+        const desktopAppUrl = `whatsapp://send?phone=${phone}&text=${text}`;
+        const webUrl = `https://web.whatsapp.com/send?phone=${phone}&text=${text}`;
+        window.location.href = desktopAppUrl;
+        setTimeout(() => {
+          window.open(webUrl, "_blank");
+        }, 900);
+      }
+    }
+
     const scene = document.getElementById('scene');
     const panel = document.getElementById('visual-panel');
 
