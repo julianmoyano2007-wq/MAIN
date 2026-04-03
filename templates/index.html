@@ -703,7 +703,7 @@
           MAIN diseña páginas web y sistemas de atención para negocios que quieren verse más profesionales, responder con más claridad y organizar mejor sus oportunidades. Creamos estructuras digitales pensadas para captar, responder y agendar mejor.
         </p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20los%20servicios%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20producto%2Fservicio%20y%20quiero%20recibir%20m%C3%A1s%20informaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AServicio%20de%20inter%C3%A9s%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Contactar por Gmail</a>
+          <a class="btn btn-primary" href="#" onclick="openGmail('general'); return false;">Contactar por Gmail</a>
           <a class="btn btn-secondary" href="#planes">Ver planes</a>
         </div>
 
@@ -949,7 +949,7 @@
             <li>Sección de servicios, contacto y redes</li>
             <li>1 ronda de ajustes</li>
           </ul>
-          <a class="btn btn-secondary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20el%20Plan%20Web%20Inicial%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20Plan%20Web%20Inicial.%0A%0ANombre%3A%0ANegocio%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Cotizar por Gmail</a>
+          <a class="btn btn-secondary" href="#" onclick="openGmail('web'); return false;">Cotizar por Gmail</a>
         </article>
 
         <article class="plan featured">
@@ -963,7 +963,7 @@
             <li>Captación inicial de nombre, servicio e interés</li>
             <li>2 rondas de ajustes</li>
           </ul>
-          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20el%20Plan%20Atenci%C3%B3n%20Inteligente%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20Plan%20Atenci%C3%B3n%20Inteligente.%0A%0ANombre%3A%0ANegocio%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Cotizar por Gmail</a>
+          <a class="btn btn-primary" href="#" onclick="openGmail('ai'); return false;">Cotizar por Gmail</a>
         </article>
 
         <article class="plan">
@@ -977,7 +977,7 @@
             <li>Confirmaciones o seguimiento por correo</li>
             <li>3 rondas de ajustes</li>
           </ul>
-          <a class="btn btn-secondary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20el%20Plan%20Agenda%20y%20Automatizaci%C3%B3n%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20Plan%20Agenda%20y%20Automatizaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Cotizar por Gmail</a>
+          <a class="btn btn-secondary" href="#" onclick="openGmail('agenda'); return false;">Cotizar por Gmail</a>
         </article>
       </div>
     </div>
@@ -1012,7 +1012,7 @@
           En MAIN te ayudamos a tener una presencia digital sólida y un sistema más ordenado para captar, responder y agendar clientes con más estructura.
         </p>
         <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-          <a class="btn btn-primary" href="https://mail.google.com/mail/u/0/?to=mainagencycol%40gmail.com&su=Interesado%20en%20los%20servicios%20de%20MAIN&body=Hola%20MAIN%2C%0A%0AEstoy%20interesado%28a%29%20en%20el%20producto%2Fservicio%20y%20quiero%20recibir%20m%C3%A1s%20informaci%C3%B3n.%0A%0ANombre%3A%0ANegocio%3A%0AServicio%20de%20inter%C3%A9s%3A%0AMensaje%3A%0A&tf=cm" target="_blank">Escríbenos por Gmail</a>
+          <a class="btn btn-primary" href="#" onclick="openGmail('general'); return false;">Escríbenos por Gmail</a>
           <a class="btn btn-secondary" href="#" onclick="openWhatsApp(); return false;">WhatsApp alternativo</a>
         </div>
         <div class="contact-info">
@@ -1036,6 +1036,41 @@
   </footer>
 
   <script>
+
+
+    function openGmail(type) {
+      const to = "mainagencycol@gmail.com";
+      const templates = {
+        general: {
+          subject: "Interesado en los servicios de MAIN",
+          body: "Hola MAIN,\n\nEstoy interesado(a) en el producto/servicio y quiero recibir más información.\n\nNombre:\nNegocio:\nServicio de interés:\nMensaje:\n"
+        },
+        web: {
+          subject: "Interesado en el Plan Web Inicial de MAIN",
+          body: "Hola MAIN,\n\nEstoy interesado(a) en el Plan Web Inicial.\n\nNombre:\nNegocio:\nMensaje:\n"
+        },
+        ai: {
+          subject: "Interesado en el Plan Atención Inteligente de MAIN",
+          body: "Hola MAIN,\n\nEstoy interesado(a) en el Plan Atención Inteligente.\n\nNombre:\nNegocio:\nMensaje:\n"
+        },
+        agenda: {
+          subject: "Interesado en el Plan Agenda y Automatización de MAIN",
+          body: "Hola MAIN,\n\nEstoy interesado(a) en el Plan Agenda y Automatización.\n\nNombre:\nNegocio:\nMensaje:\n"
+        }
+      };
+
+      const config = templates[type] || templates.general;
+      const subject = encodeURIComponent(config.subject);
+      const body = encodeURIComponent(config.body);
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+      } else {
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${subject}&body=${body}`;
+        window.open(gmailUrl, "_blank");
+      }
+    }
 
     function openWhatsApp() {
       const phone = "573168181056";
